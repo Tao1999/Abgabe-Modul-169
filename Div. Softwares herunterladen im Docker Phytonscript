@@ -1,0 +1,36 @@
+import subprocess
+
+# Funktion zum Herunterladen und Ausführen eines Docker-Images
+def download_and_run_docker_image(image_name, container_name):
+    # Docker Image herunterladen
+    subprocess.run(["docker", "pull", image_name])
+
+    # Docker-Container starten
+    container_id = subprocess.check_output(["docker", "run", "-d", "--name", container_name, image_name]).decode().strip()
+
+    # Container-Status überwachen, bis der Container beendet ist
+    while True:
+        container_status = subprocess.check_output(["docker", "inspect", "-f", "{{.State.Status}}", container_id]).decode().strip()
+        if container_status == "exited":
+            break
+
+    # Container beenden und löschen
+    subprocess.run(["docker", "stop", container_id])
+    subprocess.run(["docker", "rm", container_id])
+
+    print(f"{image_name} wurde erfolgreich heruntergeladen und ausgeführt.")
+
+# Spotify herunterladen und ausführen
+download_and_run_docker_image("spotify", "spotify-container")
+
+# Netflix herunterladen und ausführen
+download_and_run_docker_image("netflix", "netflix-container")
+
+# Chrome herunterladen und ausführen
+download_and_run_docker_image("chrome", "chrome-container")
+
+# Outlook herunterladen und ausführen
+download_and_run_docker_image("outlook", "outlook-container")
+
+# Teams herunterladen und ausführen
+download_and_run_docker_image("teams", "teams-container")

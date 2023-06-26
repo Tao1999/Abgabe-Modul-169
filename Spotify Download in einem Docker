@@ -1,0 +1,17 @@
+# Docker Image für Spotify herunterladen
+docker pull spotify
+
+# Docker-Container starten und Spotify herunterladen
+$containerId = docker run -d --name spotify-downloader spotify
+
+# Spotify-Container überwachen, bis der Download abgeschlossen ist
+do {
+    $containerStatus = docker inspect -f '{{.State.Status}}' $containerId
+    Start-Sleep -Seconds 5
+} until ($containerStatus -eq "exited")
+
+# Spotify-Container beenden und löschen
+docker stop $containerId
+docker rm $containerId
+
+Write-Host "Spotify wurde erfolgreich heruntergeladen."
